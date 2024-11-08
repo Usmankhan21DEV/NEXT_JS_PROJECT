@@ -1,20 +1,27 @@
 import { redirect } from "next/navigation"
+
+import { sql,db } from '@vercel/postgres';
 import pool from "@/lib/db"
-const db = await pool.getConnection()  
+//const db = await pool.getConnection()  
 
 export default async function Page({ params }) {
     const shorturl = (await params).shorturl;
-const query1 = 'SELECT * FROM url WHERE shorturl = ?';
-const [rows1] = await db.execute(query1, [shorturl]);
+    const client = await db.connect(); 
+    const pets = await client.sql`SELECT * FROM url where shorturl=${shorturl};`;
+    if (pets.rows !="" && pets.rowCount>0) {
+      redirect(pets.rows[0].url);
+    }else{
+        redirect(`${process.env.NEXT_PUBLIC_HOST}`);
+    }
 // Check if rows1 has any result
 
-if (rows1.length > 0 && rows1[0].url) {   
-    // Redirect to the found URL
-    console.log(rows1[0].url);
-    redirect(rows1[0].url);
-} else {
-    // Redirect to the home page if no result is found
-    redirect(`${process.env.NEXT_PUBLIC_HOST}`);
-}
+// if (rows1.length > 0 && rows1[0].url) {   
+//     // Redirect to the found URL
+//     console.log(rows1[0].url);
+//     redirect(rows1[0].url);
+// } else {
+//     // Redirect to the home page if no result is found
+//     redirect(`${process.env.NEXT_PUBLIC_HOST}`);
+// }
     return <div>My Post: {url}</div>
 }
