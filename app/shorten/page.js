@@ -2,6 +2,7 @@
 "use client"
 import React,{useState} from 'react'
 import Link from 'next/link'
+import { Result } from 'postcss'
 const Shorten = () => {
   const [url,seturl] = useState("")
     const [short,setshort] = useState("")
@@ -15,12 +16,14 @@ const Shorten = () => {
       
       fetch('/api/generate', options)
         .then(response => response.json())
-        .then(response => {console.log(response)
-           setgenerated(`${process.env.NEXT_PUBLIC_HOST}/${short}`)
-           seturl("")
-          setshort("")
+        .then((result) => {console.log(result)
+            if(result.success !="false")
+            {setgenerated(`${process.env.NEXT_PUBLIC_HOST}/${short}`)}
+
+            seturl("")
+            setshort("")
          
-          alert(response.message)
+          alert(result.message)
         })
         .catch(err => console.error(err));
     }

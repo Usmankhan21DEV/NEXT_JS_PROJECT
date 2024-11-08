@@ -31,8 +31,9 @@ export async function POST(request) {
         { status: 400 }
       );
     }
-    const pets = await client.sql`SELECT * FROM url where shorturl=${shorturl};`;
-    if (pets.rows !="") {
+    const pets = await client.sql`SELECT * FROM url where shorturl=${shorturl} or url = ${url};`;
+    //console.log(pets.rows);
+    if (pets.rowCount>0) {
       return NextResponse.json(
         { error: "true",message:"URL already Exist",success:"false" },
         { status: 404 }
