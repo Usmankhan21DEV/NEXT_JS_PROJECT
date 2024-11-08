@@ -1,4 +1,4 @@
-/*
+
 import { NextResponse } from "next/server";
 import { sql,db } from '@vercel/postgres';
 import pool from "../../../lib/db";
@@ -139,23 +139,23 @@ export async function POST(request) {
 //     }
 //   }
   
-//   export async function DELETE(request) {
-//     try {
-//       const {id } = await request.json();
-//       if (!id) {
-//         return NextResponse.json(
-//           { error: "ID IS required." },
-//           { status: 400 }
-//         );
-//       }
-//       const query = 'Delete from users WHERE id = ?';
-//       const [result] = await db.execute(query, [id]);
-//       return NextResponse.json({ message:"Deleted" });
-//     } catch (error) {
-//       console.error("Database insertion error:", error);
-//       return NextResponse.json(
-//         { error: "Server error" },
-//         { status: 500 }
-//       );
-//     }
-//   }
+  // export async function DELETE(request) {
+  //   try {
+  //     const {id } = await request.json();
+  //     if (!id) {
+  //       return NextResponse.json(
+  //         { error: "ID IS required." },
+  //         { status: 400 }
+  //       );
+  //     }
+  //     const query = 'Delete from users WHERE id = ?';
+  //     const [result] = await db.execute(query, [id]);
+  //     return NextResponse.json({ message:"Deleted" });
+  //   } catch (error) {
+  //     console.error("Database insertion error:", error);
+  //     return NextResponse.json(
+  //       { error: "Server error" },
+  //       { status: 500 }
+  //     );
+  //   }
+  // }

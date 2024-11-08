@@ -1,4 +1,3 @@
-/*
 import { redirect } from "next/navigation"
 
 import { sql,db } from '@vercel/postgres';
@@ -26,4 +25,3 @@ export default async function Page({ params }) {
 // }
     return <div>My Post: {url}</div>
 }
-*/
