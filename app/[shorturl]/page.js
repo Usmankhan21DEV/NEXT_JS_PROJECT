@@ -1,3 +1,4 @@
+/*
 import { redirect } from "next/navigation"
 import pool from "@/lib/db"
 const db = await pool.getConnection()  
@@ -18,3 +19,4 @@ if (rows1.length > 0 && rows1[0].url) {
 }
     return <div>My Post: {url}</div>
 }
+*/
