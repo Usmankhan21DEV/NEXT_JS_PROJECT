@@ -16,14 +16,18 @@ const Shorten = () => {
       
       fetch('/api/generate', options)
         .then(response => response.json())
-        .then((result) => {console.log(result)
+        .then((result) => {
             if(result.success !="false")
-            {setgenerated(`${process.env.NEXT_PUBLIC_HOST}/${short}`)}
+            {setgenerated(`${process.env.NEXT_PUBLIC_HOST}/${short}`)            
+            } else{
+              alert(result.message)
+              setgenerated("");
+            }
 
             seturl("")
             setshort("")
          
-          alert(result.message)
+          
         })
         .catch(err => console.error(err));
     }
