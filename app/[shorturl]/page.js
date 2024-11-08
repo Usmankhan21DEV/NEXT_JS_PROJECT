@@ -7,6 +7,7 @@ import pool from "@/lib/db"
 export default async function Page({ params }) {
     const shorturl = (await params).shorturl;
     const client = await db.connect(); 
+    console.log(shorturl.toLowerCase())
     const pets = await client.sql`SELECT * FROM url WHERE LOWER(shorturl) = ${shorturl.toLowerCase()};`;  
     if (pets.rows !="" && pets.rowCount>0) {
       redirect(pets.rows[0].url);
