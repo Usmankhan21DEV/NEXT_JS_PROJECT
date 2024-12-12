@@ -1,0 +1,319 @@
+generator client {
+  provider         = "prisma-client-js"
+  premodelFeatures = ["models"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+
+
+
+
+
+
+
+
+model imei_user_junction {
+  SEQ_NUM                  Int                       @id @default(autoincrement())
+  USER_SEQ_NUM             Int?
+  INFO_SEQ_NUM             Int?
+  INFO_D_SEQ_NUM           Int?
+  SERVICE_NO               Int?
+  SERVICE_FEE              Decimal?                  @default(0.00) @db.Decimal(10, 2)
+  SEARCH_DATE              DateTime?                 @db.DateTime(0)
+  user_info                user_info?                @relation(fields: [USER_SEQ_NUM], references: [SEQ_NUM], onDelete: NoAction, onUpdate: NoAction, map: "imei_user_junction_ibfk_1")
+  info                     info?                     @relation(fields: [INFO_SEQ_NUM], references: [ID_SEQ], onDelete: NoAction, onUpdate: NoAction, map: "imei_user_junction_ibfk_2")
+  info_delay               info_delay?               @relation(fields: [INFO_D_SEQ_NUM], references: [ID_SEQ], onDelete: NoAction, onUpdate: NoAction, map: "imei_user_junction_ibfk_3")
+  package_service_junction package_service_junction? @relation(fields: [SERVICE_NO], references: [SEQ_NUM], onDelete: NoAction, onUpdate: NoAction, map: "imei_user_junction_ibfk_4")
+
+  @@index([USER_SEQ_NUM], map: "imei_user_junction_ibfk_1")
+  @@index([INFO_SEQ_NUM], map: "imei_user_junction_ibfk_2")
+  @@index([INFO_D_SEQ_NUM], map: "imei_user_junction_ibfk_2_idx")
+  @@index([SERVICE_NO], map: "imei_user_junction_ibfk_4_idx")
+}
+
+model info {
+  ID_SEQ                          Int                  @id @default(autoincrement())
+  IMEI                            String               @unique(map: "IMEI") @db.VarChar(20)
+  ENTRY_DATE                      DateTime?            @default(now()) @db.DateTime(0)
+  IPHONE_CARRIER                  String?              @db.Text
+  IPHONE_SIM_LOCK                 String?              @db.Text
+  APPLE_ACTIVATION_STATUS_IMEI_SN String?              @db.Text
+  MDM_LOCK_BYPASS_IPHONE_IPAD     String?              @db.Text
+  ONEPLUS_INFO                    String?              @db.Text
+  MOTOROLA_INFO                   String?              @db.Text
+  GOOGLE_PIXEL_INFO               String?              @db.Text
+  SAMSUNG_INFO                    String?              @db.Text
+  SAMSUNG_INFO_PRO                String?              @db.Text
+  BRAND_MODEL_INFO                String?              @db.Text
+  APPLE_SOLD_BY_COVERAGE          String?              @db.Text
+  APPLE_IOS_VERSION_NEXT_TETHER   String?              @db.Text
+  APPLE_PART_NUMBER_MPN           String?              @db.Text
+  IMEI_SN_CONVERT                 String?              @db.Text
+  APPLE_SERIAL_INFO               String?              @db.Text
+  TRACFONE_USA_STATUS_PRO         String?              @db.Text
+  LG_INFO                         String?              @db.Text
+  ZTE_INFO                        String?              @db.Text
+  ASUS_INFO                       String?              @db.Text
+  OPPO_INFO                       String?              @db.Text
+  ACER_INFO                       String?              @db.Text
+  HONOR_INFO                      String?              @db.Text
+  DOOGEE_INFO                     String?              @db.Text
+  REALME_INFO                     String?              @db.Text
+  HUAWEI_INFO                     String?              @db.Text
+  LENOVO_INFO                     String?              @db.Text
+  KYOCERA_INFO                    String?              @db.Text
+  ALCATEL_INFO                    String?              @db.Text
+  VIVO_IQOO_INFO                  String?              @db.Text
+  NOTHING_PHONE_INFO              String?              @db.Text
+  SIM_ICCID_IMSI_INFO             String?              @db.Text
+  ITEL_TECNO_SONIM_INFO           String?              @db.Text
+  imei_user_junction              imei_user_junction[]
+}
+
+model info_delay {
+  ID_SEQ                                      Int                  @id @default(autoincrement())
+  IMEI                                        String               @db.VarChar(20)
+  ENTRY_DATE                                  DateTime?            @default(now()) @db.DateTime(0)
+  IPHONE_CARRIER_FMI_BLACKLIST                String?              @db.Text
+  ICLOUD_ON_OFF                               String?              @db.Text
+  APPLE_MDM_STATUS                            String?              @db.Text
+  APPLE_BASIC_INFO                            String?              @db.Text
+  WW_BLACKLIST_STATUS                         String?              @db.Text
+  USA_T_MOBILE_CLEAN                          String?              @db.Text
+  USA_AT_T_CLEAN_ACTIVE_LINE                  String?              @db.Text
+  USA_CRICKET_CLEAN_6_MONTHS_OLD              String?              @db.Text
+  CLARO_ALL_COUNTRIES_PREMIUM_IPHONE_14       String?              @db.Text
+  CLARO_ALL_COUNTRIES_PREMIUM_IPHONE_15       String?              @db.Text
+  CLARO_ALL_COUNTRIES_PREMIUM_UP_TO_IPHONE_13 String?              @db.Text
+  SAMSUNG_AT_T_CRICKET_ALL_MODELS             String?              @db.Text
+  APPLE_GSX_CASES_ID_INFO                     String?              @db.Text
+  IPHONE_CARRIER_FMI                          String?              @db.Text
+  ICLOUD_CLEAN_LOST                           String?              @db.Text
+  APPLE_MDM_ICLOUD_GSX_STATUS                 String?              @db.Text
+  MACBOOK_IMAC_ICLOUD_ON_OFF_STATUS           String?              @db.Text
+  MACBOOK_IMAC_ICLOUD_CLEAN_LOST_STATUS       String?              @db.Text
+  XIAOMI_MI_ACCOUNT_REMOVE_EUROPE             String?              @db.Text
+  USA_AT_T_UNLOCK_STATUS                      String?              @db.Text
+  WW_BLACKLIST_STATUS_PRO                     String?              @db.Text
+  XFINITY_USA_STATUS_PRO                      String?              @db.Text
+  MYMOBILE_USA_STATUS_PRO                     String?              @db.Text
+  CRICKET_USA_STATUS_PRO                      String?              @db.Text
+  T_MOBILE_USA_STATUS_PRO                     String?              @db.Text
+  T_MOBILE_USA_SIMLOCK_STATUS                 String?              @db.Text
+  VERIZON_USA_STATUS_PRO                      String?              @db.Text
+  KOREA_BLACKLIST_STATUS                      String?              @db.Text
+  JAPAN_BLACKLIST_STATUS                      String?              @db.Text
+  AUSTRALIA_BLACKLIST_STATUS                  String?              @db.Text
+  XIAOMI_MI_LOCK_INFO                         String?              @db.Text
+  XIAOMI_MI_LOCK_STATUS                       String?              @db.Text
+  SAMSUNG_KNOX_GUARD_INFO                     String?              @db.Text
+  UK_O2_TESCO_CLEAN                           String?              @db.Text
+  UK_VODAFONE_CLEAN                           String?              @db.Text
+  CANADA_TELUS_CLEAN                          String?              @db.Text
+  JAPAN_AU_KDDI_CLEAN                         String?              @db.Text
+  JAPAN_SOFTBANK_CLEAN                        String?              @db.Text
+  EMEA_SERVICE_PREMIUM                        String?              @db.Text
+  JAPAN_NTT_DOCOMO_CLEAN                      String?              @db.Text
+  US_RESELLER_FLEX_CLEAN                      String?              @db.Text
+  ROMANIA_ORANGE_PREMIUM                      String?              @db.Text
+  PHILIPPINES_GLOBE_CLEAN                     String?              @db.Text
+  CANADA_FIDO_ROGERS_CLEAN                    String?              @db.Text
+  ROMANIA_VODAFONE_PREMIUM                    String?              @db.Text
+  AUSTRIA_A1_MOBILKOM_PREMIUM                 String?              @db.Text
+  USA_AT_T_SOLD_DATE_60_DAYS                  String?              @db.Text
+  UK_EE_T_MOBILE_ORANGE_PREMIUM               String?              @db.Text
+  HUNGARY_VODAFONE_PREMIUM_IPHONE_12_TO_14    String?              @db.Text
+  HUNGARY_VODAFONE_PREMIUM_IPHONE_4S_TO_11    String?              @db.Text
+  UK_O2_CLEAN                                 String?              @db.Text
+  FRANCE_BOUYGUES                             String?              @db.Text
+  LG_2019_DATABASE                            String?              @db.Text
+  CANADA_VIDEOTRON                            String?              @db.Text
+  LG_2020_DATABASE                            String?              @db.Text
+  HTC_INTERNATIONAL                           String?              @db.Text
+  CANADA_BELL_NCK_CODE                        String?              @db.Text
+  SAMSUNG_UK_IRELAND_PREMIUM                  String?              @db.Text
+  SAMSUNG_EUROPE_PREMIUM                      String?              @db.Text
+  SAMSUNG_EUROPE_LIMITED_COUNTRIES            String?              @db.Text
+  APPLE_FULL_GSX_PREMIUM_INFO                 String?              @db.Text
+  APPLE_GSX_POLICY_WiFi_MAC                   String?              @db.Text
+  APPLE_GSX_CASES_REPAIRS                     String?              @db.Text
+  CSPIRE_USA_STATUS_PRO                       String?              @db.Text
+  imei_user_junction                          imei_user_junction[]
+  order_history                               order_history[]
+}
+
+model order_history {
+  SEQ_NUM                  Int                       @id @default(autoincrement())
+  USER_SEQ_NUM             Int?
+  ORDER_ID                 String?                   @db.VarChar(45)
+  INFO_SEQ_NUM             Int?
+  IMEI                     String?                   @db.VarChar(45)
+  SERVICE_SEQ_NUM          Int?
+  SERVICE_COST             Decimal?                  @db.Decimal(10, 2)
+  SEARCH_DATE              DateTime?                 @default(now()) @db.DateTime(0)
+  STATUS                   String?                   @db.VarChar(20)
+  SERVICE_NAME             String?                   @db.VarChar(45)
+  USER_SERVICE_NAME        String?                   @db.VarChar(45)
+  COMPLETED_DATE           DateTime?                 @db.DateTime(0)
+  REQUESTED_EMAIL          String?                   @db.VarChar(45)
+  user_info                user_info?                @relation(fields: [USER_SEQ_NUM], references: [SEQ_NUM], onDelete: NoAction, onUpdate: NoAction, map: "ORDER_HISTORY_ibfk_1")
+  info_delay               info_delay?               @relation(fields: [INFO_SEQ_NUM], references: [ID_SEQ], onDelete: NoAction, onUpdate: NoAction, map: "ORDER_HISTORY_ibfk_2")
+  package_service_junction package_service_junction? @relation(fields: [SERVICE_SEQ_NUM], references: [SEQ_NUM], onDelete: NoAction, onUpdate: NoAction, map: "ORDER_HISTORY_ibfk_3")
+
+  @@index([INFO_SEQ_NUM], map: "INFO_SEQ_NUM")
+  @@index([SERVICE_SEQ_NUM], map: "ORDER_HISTORY_ibfk_3")
+  @@index([USER_SEQ_NUM], map: "USER_SEQ_NUM")
+}
+
+model package_service_junction {
+  SEQ_NUM            Int                  @id @default(autoincrement())
+  SERVICE_SEQ_NUM    Int
+  PACKAGE_SEQ_NUM    Int
+  COST               Decimal              @default(0.00) @db.Decimal(10, 2)
+  CREATE_DATE        DateTime?            @default(now()) @db.DateTime(0)
+  imei_user_junction imei_user_junction[]
+  order_history      order_history[]
+  packages           packages             @relation(fields: [PACKAGE_SEQ_NUM], references: [SEQ_NUM], onDelete: NoAction, onUpdate: NoAction, map: "fk_package")
+  services           services             @relation(fields: [SERVICE_SEQ_NUM], references: [SEQ_NUM], onDelete: NoAction, onUpdate: NoAction, map: "fk_service")
+  refund             refund[]
+
+  @@index([PACKAGE_SEQ_NUM], map: "fk_package")
+  @@index([SERVICE_SEQ_NUM], map: "fk_service")
+}
+
+model packages {
+  SEQ_NUM                  Int                        @id @unique(map: "SEQ_NUM") @default(autoincrement())
+  NAME                     String                     @db.VarChar(100)
+  CREATE_DATE              DateTime?                  @default(now()) @db.DateTime(0)
+  package_service_junction package_service_junction[]
+  payment_detail           payment_detail[]
+  refund                   refund[]
+}
+
+model payment_detail {
+  SEQ_NUM         Int        @id @default(autoincrement())
+  TRANS_ID        String?    @db.VarChar(255)
+  PAYMENT_METHOD  String?    @db.VarChar(255)
+  STATUS          String?    @db.VarChar(1000)
+  USER_SEQ_NUM    Int?
+  BUYER_EMAIL     String?    @db.VarChar(255)
+  FIRST_NAME      String?    @db.VarChar(255)
+  LAST_NAME       String?    @db.VarChar(255)
+  BUYER_ID        String?    @db.VarChar(255)
+  AMOUNT          Decimal    @default(0.00) @db.Decimal(10, 2)
+  PACKAGE_SEQ_NUM Int?
+  TAX             String?    @db.VarChar(255)
+  CREATE_DATETIME DateTime?  @db.DateTime(0)
+  UPDATE_DATETIME DateTime?  @db.DateTime(0)
+  packages        packages?  @relation(fields: [PACKAGE_SEQ_NUM], references: [SEQ_NUM], onDelete: NoAction, onUpdate: NoAction, map: "fk_package_balance")
+  user_info       user_info? @relation(fields: [USER_SEQ_NUM], references: [SEQ_NUM], onDelete: NoAction, onUpdate: NoAction, map: "payment_detail_ibfk_1")
+
+  @@index([USER_SEQ_NUM], map: "USER_SEQ_NUM")
+  @@index([PACKAGE_SEQ_NUM], map: "fk_package_balance")
+}
+
+model payment_types {
+  SEQ_NUM           Int      @id @unique(map: "PAYMENT_TYPES_PK") @default(autoincrement())
+  PAYMENT_TYPE_NAME String   @db.VarChar(50)
+  ENTRY_DATE        DateTime @default(now()) @db.DateTime(0)
+}
+
+model refund {
+  SEQ_NUM                  Int                       @id @default(autoincrement())
+  AMOUNT                   Decimal                   @db.Decimal(10, 2)
+  SERVICE_NO               Int?
+  PACKAGE_SEQ_NUM          Int?
+  BALANCE_SEQ_NUM          Int?
+  USER_SEQ_NUM             Int
+  REASON                   String?                   @db.Text
+  CREATED_DATE             DateTime?                 @default(now()) @db.DateTime(0)
+  user_info                user_info                 @relation(fields: [USER_SEQ_NUM], references: [SEQ_NUM], onDelete: NoAction, onUpdate: NoAction, map: "REFUND_FOREIGN_KEY_1")
+  package_service_junction package_service_junction? @relation(fields: [SERVICE_NO], references: [SEQ_NUM], onDelete: NoAction, onUpdate: NoAction, map: "REFUND_FOREIGN_KEY_2")
+  packages                 packages?                 @relation(fields: [PACKAGE_SEQ_NUM], references: [SEQ_NUM], onDelete: NoAction, onUpdate: NoAction, map: "REFUND_FOREIGN_KEY_3")
+  user_balance             user_balance?             @relation(fields: [BALANCE_SEQ_NUM], references: [SEQ_NUM], onDelete: NoAction, onUpdate: NoAction, map: "REFUND_FOREIGN_KEY_4")
+
+  @@index([USER_SEQ_NUM], map: "REFUND_FOREIGN_KEY_1_IDX")
+  @@index([SERVICE_NO], map: "REFUND_FOREIGN_KEY_2_IDX")
+  @@index([PACKAGE_SEQ_NUM], map: "REFUND_FOREIGN_KEY_2_IDX1")
+  @@index([BALANCE_SEQ_NUM], map: "REFUND_FOREIGN_KEY_4_IDX")
+}
+
+
+model services {
+  SEQ_NUM                  Int                        @id @unique(map: "SEQ_NUM") @default(autoincrement())
+  NAME                     String                     @db.VarChar(100)
+  CREATE_DATE              DateTime?                  @default(now()) @db.DateTime(0)
+  APIKEY                   Int?                       @unique(map: "ApiKey_UNIQUE")
+  SERVICE                  String?                    @db.VarChar(255)
+  TYPE                     String?                    @db.VarChar(45)
+  DELAY                    String?                    @default("NO") @db.VarChar(45)
+  package_service_junction package_service_junction[]
+}
+
+model user_balance {
+  SEQ_NUM         Int        @id @default(autoincrement())
+  USER_SEQ_NUM    Int?
+  BALANCE         Decimal?   @default(0.00) @db.Decimal(10, 2)
+  PACKAGE_SEQ_NUM Int?
+  CREATED_DATE    DateTime?  @default(now()) @db.DateTime(0)
+  refund          refund[]
+  user_info       user_info? @relation(fields: [USER_SEQ_NUM], references: [SEQ_NUM], onDelete: NoAction, onUpdate: NoAction, map: "user_balance_ibfk_1")
+
+  @@index([USER_SEQ_NUM], map: "USER_SEQ_NUM")
+}
+
+model user_comment {
+  SEQ_NUM      Int       @id @default(autoincrement())
+  NAME         String?   @db.VarChar(255)
+  EMAIL        String?   @db.VarChar(255)
+  COMMENT      String?   @db.VarChar(1000)
+  CREATED_DATE DateTime? @db.DateTime(0)
+}
+
+model user_info {
+  SEQ_NUM            Int                  @id @default(autoincrement())
+  FIRST_NAME         String               @db.VarChar(255)
+  LAST_NAME          String               @db.VarChar(255)
+  EMAIL              String               @unique(map: "EMAIL") @db.VarChar(255)
+  CONTACT_NUMBER     String               @unique(map: "CONTACT_NUMBER") @db.VarChar(255)
+  ADDRESS_1          String               @db.VarChar(255)
+  ADDRESS_2          String               @db.VarChar(255)
+  CITY               String               @db.VarChar(255)
+  STATE              String               @db.VarChar(255)
+  COUNTRY            String               @db.VarChar(255)
+  ZIP_POSTAL_CODE    String               @db.VarChar(255)
+  PASSWORD           String               @db.VarChar(255)
+  TOKEN              String?              @db.VarChar(255)
+  VARIFIED           Boolean?
+  TRAIL_PERIOD       Boolean?
+  IS_ACTIVE          Boolean?
+  IS_LOGIN           Boolean?
+  USER_IP            String?              @db.VarChar(255)
+  USER_BROWSER       String?              @db.VarChar(255)
+  USER_HOST_NAME     String?              @db.VarChar(255)
+  DEVICE_TYPE        String?              @db.VarChar(255)
+  ROLES              Int?                 @default(1)
+  DEFAULT_EMAIL      Int?                 @default(0)
+  imei_user_junction imei_user_junction[]
+  order_history      order_history[]
+  payment_detail     payment_detail[]
+  refund             refund[]
+  user_balance       user_balance[]
+  user_roles         user_roles?          @relation(fields: [ROLES], references: [ROLE_ID], onDelete: NoAction, onUpdate: NoAction, map: "fk_roles")
+
+  @@index([ROLES], map: "fk_roles")
+}
+
+model user_roles {
+  ROLE_ID     Int         @id @default(autoincrement())
+  ROLE_NAME   String?     @db.VarChar(255)
+  ROLE_RIGHTS String?     @db.VarChar(255)
+  CREATE_DATE DateTime?   @default(now()) @db.DateTime(0)
+  user_info   user_info[]
+}

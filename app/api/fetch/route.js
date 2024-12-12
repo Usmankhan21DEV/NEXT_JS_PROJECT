@@ -14,6 +14,7 @@ export async function POST(request) {
           { status: 400 }
         );
       }  
+      console.log(airport_name);
       const result = await client.sql`
         SELECT * FROM airports
         WHERE airport_name LIKE ${'%' + airport_name + '%'} 
@@ -49,12 +50,13 @@ export async function POST(request) {
         const client = await db.connect();        
         const result = await client.sql`SELECT 
       id,
-      CONCAT(airport_name, ' (', city_iata_code, ')', ', ', country_iso2) AS airport_info
+      CONCAT(airport_name, ' (', city_iata_code, ')', ', ', country_iso2,' ',country_name) AS airport_info
   FROM airports;`;
-    
+  
         // Check if results are found
         if (result.rowCount > 0) {
           const airport = result.rows; // Assuming you only need the first match
+
           return NextResponse.json({
               data: result.rows,  // Return the array of rows
               message: "Successfully Fetched",

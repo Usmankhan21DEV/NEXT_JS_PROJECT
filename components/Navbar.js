@@ -26,10 +26,10 @@ const Navbar = () => {
             <h1 className="text-2xl font-bold"><Link href="/">Travel</Link></h1>
           </div>
           <nav className="hidden md:flex space-x-4">
-            <Link href="/home" className="relative group inline-block text-black hover:text-black"><PlaneIcon className='mx-3' size={30}/> Flights<span className="absolute bottom-[-3px] left-0 w-0 h-0.5 bg-black group-hover:w-full transition-all duration-300"/></Link>
-            <Link href="/aboutus" className="relative group inline-block text-black hover:text-black"><Hotel className='mx-3' size={30}/> Hotels<span className="absolute bottom-[-3px] left-0 w-0 h-0.5 bg-black group-hover:w-full transition-all duration-300"/></Link>
-            <Link href="/book" className="relative group inline-block text-black hover:text-black"><TreePalm className='mx-3' size={30}/> Holidays<span className="absolute bottom-[-3px] left-0 w-0 h-0.5 bg-black group-hover:w-full transition-all duration-300"/></Link>
-            <Link href="#" className="relative group inline-block text-black hover:text-black"><CarTaxiFront className='mx-3' size={30}/> Car Hire<span className="absolute bottom-[-3px] left-0 w-0 h-0.5 bg-black group-hover:w-full transition-all duration-300"/></Link>
+            <Link href="/home" className="relative group inline-block text-xl	 text-black hover:text-black"><PlaneIcon className='mx-4' size={30}/> Flights<span className="absolute bottom-[-3px] left-0 w-0 h-0.5 bg-black group-hover:w-full transition-all duration-300"/></Link>
+            <Link href="/aboutus" className="relative group inline-block text-xl	 text-black hover:text-black"><Hotel className='mx-4' size={30}/> Hotels<span className="absolute bottom-[-3px] left-0 w-0 h-0.5 bg-black group-hover:w-full transition-all duration-300"/></Link>
+            <Link href="/book" className="relative group inline-block text-xl	 text-black hover:text-black"><TreePalm className='mx-4' size={30}/> Holidays<span className="absolute bottom-[-3px] left-0 w-0 h-0.5 bg-black group-hover:w-full transition-all duration-300"/></Link>
+            <Link href="#" className="relative group inline-block text-xl	 text-black hover:text-black"><CarTaxiFront className='mx-4' size={30}/> Car Hire<span className="absolute bottom-[-3px] left-0 w-0 h-0.5 bg-black group-hover:w-full transition-all duration-300"/></Link>
           </nav>
           <div className="flex items-center space-x-4">
             <PhoneIcon className="h-5 w-5" />

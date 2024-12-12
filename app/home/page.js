@@ -3,122 +3,193 @@
 import { useState ,useEffect} from 'react';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
+import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { addDays,format } from "date-fns";
-//import { DayPicker, DateRange } from "react-day-picker";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DateRange } from "react-day-picker"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {  Command,  CommandEmpty,  CommandGroup,  CommandInput,  CommandItem,} from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { CalendarIcon, MenuIcon, PhoneIcon, PlaneIcon,ChevronRight, SearchIcon, XIcon,Plane } from 'lucide-react';
+import { CalendarIcon, MenuIcon, PhoneIcon, PlaneIcon,ChevronRight, SearchIcon, XIcon,Plane, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Combobox } from '../../components/ui/combobox';
+import Swal from 'sweetalert2';
+import '../../app/style.css';
 
-export default function home() {
+// export async function getServerSideProps() {
+//   const options = {
+//     method: "POST",
+//     url: "https://test.api.amadeus.com/v1/security/oauth2/token",
+//     headers: {
+//       "Content-Type": "application/x-www-form-urlencoded",
+//       "User-Agent": "insomnia/10.1.1",
+//     },
+//     data: {
+//       grant_type: "client_credentials",
+//       client_id: "sWgCbVp5sr1DtGdSYDORr6YtHuM687dC",
+//       client_secret: "B6UEmhtgIluOqopF",
+//     },
+//   };
+
+//   try {
+//     const response = await axios.request(options);
+//     const token = response.data?.access_token;
+
+//     if (!token) {
+//       return {
+//         redirect: {
+//           destination: "/error", // Redirect to an error page if the token is not generated
+//           permanent: false,
+//         },
+//       };
+//     }
+
+//     return {
+//       props: {
+//         token, // Pass the token to the page
+//       },
+//     };
+//   } catch (error) {
+//     console.error("Error generating token:", error);
+//     return {
+//       redirect: {
+//         destination: "/error",
+//         permanent: false,
+//       },
+//     };
+//   }
+// }
+const LoadingSpinner = () => (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white p-5 rounded-lg flex flex-col items-center">
+      <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+      <p className="mt-2 text-gray-700">Searching for flights...</p>
+    </div>
+  </div>
+)
+export default function home({}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [date1, setDate1] = useState();
   const [date, setDate] = useState({
     from: new Date(), // Default to today
     to: addDays(new Date(), 1), // Default range (today + 1 day)
   });
-  const [fromAirport, setFromAirport] = useState('');
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    iconColor: 'white',
+    customClass: {
+      popup: 'colored-toast',
+    },
+    showConfirmButton: false,
+    timer: 1500,
+    timerProgressBar: true,
+  })
+  const [fromSearchQuery, setFromSearchQuery] = useState('');  // Search state for From airport
+  const [toSearchQuery, setToSearchQuery] = useState('');      // Search state for To airport
+  const [filteredFromAirports, setFilteredFromAirports] = useState([]);
+  const [filteredToAirports, setFilteredToAirports] = useState([]);
+  const [query, setQuery] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [passcount, setpasscount] = useState('1'); 
+  const [travelClass, settravelClass] = useState('ECONOMY'); 
+  const [fromAirport, setFromAirport] = useState(''); 
   const [toAirport, setToAirport] = useState('');
   const [airports, setAirports] = useState([]);
+  const [searchResults, setSearchResults] = useState(null);
 
-  // Fetch the data when the page loads
   useEffect(() => {
     const fetchAirports = async () => {
-        try {
-          const response = await fetch('/api/fetch');          
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-  
-          const data = await response.json();
-  
-          if (data.success === 'true') {
-            setAirports(data.data); // Store the airport data
-            if (data.data.length > 0) {
-              setFromAirport(data.data[0].airport_info); // Set the first airport as "From"
-              setToAirport(data.data[0].airport_info); // Set the first airport as "To"
-            }
-          } else {
-            console.error('No airports found.');
-          }
-        } catch (error) {
-          console.error('Error fetching airports:', error);
+      try {
+        const response = await fetch('/api/fetch');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
-      };
 
-    fetchAirports();
-    console.log(toAirport);
-    console.log(
+        const data = await response.json();
+        console.log(data);
+        if (data.success === 'true') {
+          setAirports(data.data);
+          setFilteredFromAirports(data.data || []);  // Ensure it's always an array
+          setFilteredToAirports(data.data || []); 
+          if (data.data.length > 0) {
+            setFromAirport(data.data[0].airport_info);
+            setToAirport(data.data[0].airport_info);
+          }
+        } else {
+          console.error('No airports found.');
+        }
+      } catch (error) {
+        console.error('Error fetching airports:', error);
+      }
+    };
+
       
-    );
-    
+    fetchAirports();
   }, []);
-  const handlerSearch = (e) => {
-    e.preventDefault(); // Prevents form submission
-    console.log("IT Works");
+ 
+  // useEffect(()=>{})
+
+  const handleSearchClick = () => {
+    const depdate = format(new Date(date.from), "yyyy-MM-dd");
+    const fromLocation = fromAirport.split(" (")[1].split(")")[0];
+    const toLocation = toAirport.split(" (")[1].split(")")[0];
+    const queryParams = new URLSearchParams({
+      depdate,
+      fromLocation,
+      toLocation,
+      passcount,
+      travelClass,
+    }).toString();
+
+    // Navigate to the result page with query parameters
+    window.location.href = `/result?${queryParams}`;
   };
-  const handleFromChange = (event) => {
-    setFromAirport(event.target.value);
+  const handlerSearch = async (e) => {    
+    e.preventDefault();
+    setLoading(true);
+ 
+  };
+  const handleFromChange = (value) => {
+    setFromAirport(value);
   };
 
-  // Handle changes in "To" input
-  const handleToChange = (event) => {
-    setToAirport(event.target.value);
+  const handleToChange = (value) => {
+    setToAirport(value); 
   };
-  // Function to disable past dates
   const disablePastDates = (date) => {
     const today = new Date();
-    return date <= today; // Disable dates in the past
+    return date <= today; 
   };
+  const handleClassChange = (value) => {
+    settravelClass(value);
+  };
+  const handlePASSENGERCountChange = (value) => {
+    setpasscount(value);
+  };
+  const handleAirportSearch = (query, airportType) => {
+    const filteredAirports = airports.filter((airport) =>
+      airport.airport_info.toLowerCase().includes(query.toLowerCase())
+    );
+    if (airportType === 'from') {
+      setFilteredFromAirports(filteredAirports);
+    } else if (airportType === 'to') {
+      setFilteredToAirports(filteredAirports);
+    }
+  };
+  
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      {/* <header className="bg-blue-600 text-white p-4 sticky top-0 z-10">
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center space-x-4">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden text-white">
-                  <MenuIcon className="h-6 w-6" />
-                  <span className="sr-only">Toggle menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-[300px] sm:w-[400px]">
-                <nav className="flex flex-col space-y-4">
-                  <a href="#" className="text-lg hover:text-blue-500">Flights</a>
-                  <a href="#" className="text-lg hover:text-blue-500">Hotels</a>
-                  <a href="#" className="text-lg hover:text-blue-500">Holidays</a>
-                  <a href="#" className="text-lg hover:text-blue-500">Car Hire</a>
-                </nav>
-              </SheetContent>
-            </Sheet>
-            <h1 className="text-2xl font-bold">Travel Trolley</h1>
-          </div>
-          <nav className="hidden md:flex space-x-6">
-            <a href="#" className="hover:text-blue-200 transition-colors">Flights</a>
-            <a href="#" className="hover:text-blue-200 transition-colors">Hotels</a>
-            <a href="#" className="hover:text-blue-200 transition-colors">Holidays</a>
-            <a href="#" className="hover:text-blue-200 transition-colors">Car Hire</a>
-          </nav>
-          <div className="flex items-center space-x-2">
-            <PhoneIcon className="h-5 w-5" />
-            <span className="hidden sm:inline">0208 843 4400</span>
-          </div>
-        </div>
-      </header> */}
-
       <main className="flex-grow">
       <section className="bg-cover bg-center text-black py-16" style={{ backgroundImage: "url('/banner.jpg')" }}>
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold mb-8 text-center">Search for cheap flights</h2>
-            <Card className="bg-white/95 backdrop-blur-sm shadow-lg">
+            <Card className="bg-white/95 backdrop-blur-sm shadow-lg bg-yellowCustom">
               <CardContent className="p-6">
                 <Tabs defaultValue="return" className="w-full">
                   <TabsList className="grid w-full grid-cols-3 mb-6">
@@ -128,11 +199,32 @@ export default function home() {
                   </TabsList>
                   <TabsContent value="return">
                     <form className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <Input placeholder="From" className="bg-white" value={fromAirport} onChange={handleFromChange}/>
-                      <Input placeholder="To" className="bg-white" value={toAirport} onChange={handleToChange} />
+                    <div>
+                    <label htmlFor="from-airport" className="block mb-2 text-sm font-medium">From</label>
+                    <Combobox
+                      labelField="airport_info" // The field to display
+                      valueField="airport_info" // The field used as the value
+                      data={airports}          // The array of airports
+                      value={fromAirport}            // The selected value
+                      onChange={handleFromChange}      // Function to handle value changes
+                      placeholder="Select airport"
+                    />
+                      </div>
+                      <div>
+                        <label htmlFor="to-airport" className="block mb-2 text-sm font-medium">To</label>
+                        <Combobox
+                              labelField="airport_info" // The field to display
+                              valueField="airport_info" // The field used as the value
+                              data={airports}          // The array of airports
+                              value={toAirport}            // The selected value
+                              onChange={handleToChange}      // Function to handle value changes
+                              placeholder="Select airport"
+                            />
+                     </div>
+                     
                       <div className="flex space-x-2">
-                        <div className="daterangepicker-container">
-                          <span>Dates :  </span>
+                        <div className="daterangepicker-container mx-6">                         
+                          <label className="block mb-2 text-sm font-medium">Dates : </label>
                           <Popover>
                                 <PopoverTrigger asChild>
                                 <Button
@@ -168,27 +260,28 @@ export default function home() {
 
                         </div>
                       </div>
-                      <Select>
+                      <Select onValueChange={handlePASSENGERCountChange}>
                         <SelectTrigger className="bg-white">
                           <SelectValue placeholder="Passengers" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent >
                           <SelectItem value="1">1 Adult</SelectItem>
                           <SelectItem value="2">2 Adults</SelectItem>
                           <SelectItem value="3">3 Adults</SelectItem>
                         </SelectContent>
                       </Select>
-                      <Select>
+                      <Select onValueChange={handleClassChange}>
                         <SelectTrigger className="bg-white">
                           <SelectValue placeholder="Class" />
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="economy">Economy</SelectItem>
-                          <SelectItem value="premium">Premium Economy</SelectItem>
-                          <SelectItem value="business">Business</SelectItem>
+                        <SelectContent >
+                          <SelectItem value="ECONOMY">Economy Class</SelectItem>
+                          <SelectItem value="PREMIUM_ECONOMY">Premium Economy Class</SelectItem>
+                          <SelectItem value="BUSINESS">Business Class</SelectItem>
+                          <SelectItem value="FIRST">First Class</SelectItem>
                         </SelectContent>
                       </Select>
-                      <Button onClick={handlerSearch} type="button" className="bg-orange-500 hover:bg-orange-600 text-white">
+                     <Button onClick={handleSearchClick} type="button" className="bg-orange-500 hover:bg-orange-600  text-black">
                         <SearchIcon className="mr-2 h-4 w-4" /> Search Flights
                       </Button>
                     </form>
@@ -319,6 +412,46 @@ export default function home() {
             </Card>
           </div>
         </section>
+        {loading && <LoadingSpinner />}
+        {searchResults && (
+          <div className='container mx-auto px-4 my-4'>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {searchResults.data.map((result) => (
+            <Card key={result.id} className="overflow-hidden">
+              <CardHeader className="bg-gray-100 p-4">
+                <CardTitle className="text-lg font-semibold">{result.itineraries[0].segments[0].carrierCode} {result.itineraries[0].segments[0].number}</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <div className="text-2xl font-bold">{result.itineraries[0].segments[0].departure.iataCode}</div>
+                  <Plane className="text-blue-500" />
+                  <div className="text-2xl font-bold">{result.itineraries[0].segments[0].arrival.iataCode}</div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-500">Departure</p>
+                    <p className="font-medium">{new Date(result.itineraries[0].segments[0].departure.at).toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Arrival</p>
+                    <p className="font-medium">{new Date(result.itineraries[0].segments[0].arrival.at).toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Flight</p>
+                    <p className="font-medium">{result.itineraries[0].segments[0].carrierCode} {result.itineraries[0].segments[0].number}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Price</p>
+                    <p className="font-medium">{result.price.total} {result.price.currency}</p>
+                  </div>
+                </div>
+                <Button className="w-full mt-4 bg-green-500 hover:bg-green-600  text-black">Book Now</Button>
+              </CardContent>
+            </Card>
+          ))} 
+          </div>
+          </div>
+        )}
         <section className="py-16">
             <div className="container mx-auto px-4">
                 <div className="flex flex-wrap">
@@ -437,4 +570,4 @@ export default function home() {
       </footer>
     </div>
   );
-}
+};  
