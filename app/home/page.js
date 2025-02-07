@@ -3,23 +3,23 @@
 import { useState ,useEffect} from 'react';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
-import axios from "axios";
-import { Input } from "@/components/ui/input";
+// import axios from "axios";
+// import { Input } from "@/components/ui/input";
 import { addDays,format } from "date-fns";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DateRange } from "react-day-picker"
-import { Calendar } from "@/components/ui/calendar"
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+// import { DateRange } from "react-day-picker"
+// import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import {  Command,  CommandEmpty,  CommandGroup,  CommandInput,  CommandItem,} from "@/components/ui/command"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+// import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+// import {  Command,  CommandEmpty,  CommandGroup,  CommandInput,  CommandItem,} from "@/components/ui/command"
+// import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { CalendarIcon, MenuIcon, PhoneIcon, PlaneIcon,ChevronRight, SearchIcon, XIcon,Plane, Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Combobox } from '../../components/ui/combobox';
+// import { cn } from '@/lib/utils';
+// import { Combobox } from '../../components/ui/combobox';
 import Swal from 'sweetalert2';
 import '../../app/style.css';
-
+import FlightSearchBox from '../result/result_components/FlightSearchbox';
 // export async function getServerSideProps() {
 //   const options = {
 //     method: "POST",
@@ -78,17 +78,7 @@ export default function home({}) {
     from: new Date(), // Default to today
     to: addDays(new Date(), 1), // Default range (today + 1 day)
   });
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    iconColor: 'white',
-    customClass: {
-      popup: 'colored-toast',
-    },
-    showConfirmButton: false,
-    timer: 1500,
-    timerProgressBar: true,
-  })
+ 
   const [fromSearchQuery, setFromSearchQuery] = useState('');  // Search state for From airport
   const [toSearchQuery, setToSearchQuery] = useState('');      // Search state for To airport
   const [filteredFromAirports, setFilteredFromAirports] = useState([]);
@@ -101,86 +91,93 @@ export default function home({}) {
   const [toAirport, setToAirport] = useState('');
   const [airports, setAirports] = useState([]);
   const [searchResults, setSearchResults] = useState(null);
-
-  useEffect(() => {
-    const fetchAirports = async () => {
-      try {
-        const response = await fetch('/api/fetch');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-
-        const data = await response.json();
-        console.log(data);
-        if (data.success === 'true') {
-          setAirports(data.data);
-          setFilteredFromAirports(data.data || []);  // Ensure it's always an array
-          setFilteredToAirports(data.data || []); 
-          if (data.data.length > 0) {
-            setFromAirport(data.data[0].airport_info);
-            setToAirport(data.data[0].airport_info);
-          }
-        } else {
-          console.error('No airports found.');
-        }
-      } catch (error) {
-        console.error('Error fetching airports:', error);
-      }
-    };
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    iconColor: 'white',
+    customClass: {
+      popup: 'colored-toast',
+    },
+    showConfirmButton: false,
+    timer: 1500,
+    timerProgressBar: true,
+  })
+  // useEffect(() => {
+  //   const fetchAirports = async () => {
+  //     try {
+  //       const response = await fetch('/api/fetch');
+  //       if (!response.ok) {
+  //         throw new Error('Network response was not ok');
+  //       }
+  //       const data = await response.json();
+  //       console.log(data);
+  //       if (data.success === 'true') {
+  //         setAirports(data.data);
+  //         setFilteredFromAirports(data.data || []); 
+  //         setFilteredToAirports(data.data || []); 
+  //         if (data.data.length > 0) {
+  //           setFromAirport(data.data[0].airport_info);
+  //           setToAirport(data.data[0].airport_info);
+  //         }
+  //       } else {
+  //         console.error('No airports found.');
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching airports:', error);
+  //     }
+  //   };
 
       
-    fetchAirports();
-  }, []);
+  //   fetchAirports();
+  // }, []);
+
+  // const handleSearchClick = () => {
+  //   const depdate = format(new Date(date.from), "yyyy-MM-dd");
+  //   const fromLocation = fromAirport.split(" (")[1].split(")")[0];
+  //   const toLocation = toAirport.split(" (")[1].split(")")[0];
+  //   const queryParams = new URLSearchParams({
+  //     depdate,
+  //     fromLocation,
+  //     toLocation,
+  //     passcount,
+  //     travelClass,
+  //   }).toString();
+
+  //   // Navigate to the result page with query parameters
+  //   window.location.href = `/result?${queryParams}`;
+  // };
+  // const handlerSearch = async (e) => {    
+  //   e.preventDefault();
+  //   setLoading(true);
  
-  // useEffect(()=>{})
+  // };
+  // const handleFromChange = (value) => {
+  //   setFromAirport(value);
+  // };
 
-  const handleSearchClick = () => {
-    const depdate = format(new Date(date.from), "yyyy-MM-dd");
-    const fromLocation = fromAirport.split(" (")[1].split(")")[0];
-    const toLocation = toAirport.split(" (")[1].split(")")[0];
-    const queryParams = new URLSearchParams({
-      depdate,
-      fromLocation,
-      toLocation,
-      passcount,
-      travelClass,
-    }).toString();
-
-    // Navigate to the result page with query parameters
-    window.location.href = `/result?${queryParams}`;
-  };
-  const handlerSearch = async (e) => {    
-    e.preventDefault();
-    setLoading(true);
- 
-  };
-  const handleFromChange = (value) => {
-    setFromAirport(value);
-  };
-
-  const handleToChange = (value) => {
-    setToAirport(value); 
-  };
-  const disablePastDates = (date) => {
-    const today = new Date();
-    return date <= today; 
-  };
-  const handleClassChange = (value) => {
-    settravelClass(value);
-  };
-  const handlePASSENGERCountChange = (value) => {
-    setpasscount(value);
-  };
-  const handleAirportSearch = (query, airportType) => {
-    const filteredAirports = airports.filter((airport) =>
-      airport.airport_info.toLowerCase().includes(query.toLowerCase())
-    );
-    if (airportType === 'from') {
-      setFilteredFromAirports(filteredAirports);
-    } else if (airportType === 'to') {
-      setFilteredToAirports(filteredAirports);
-    }
-  };
+  // const handleToChange = (value) => {
+  //   setToAirport(value); 
+  // };
+  // const disablePastDates = (date) => {
+  //   const today = new Date();
+  //   return date <= today; 
+  // };
+  // const handleClassChange = (value) => {
+  //   settravelClass(value);
+  // };
+  // const handlePASSENGERCountChange = (value) => {
+  //   setpasscount(value);
+  // };
+  // const handleAirportSearch = (query, airportType) => {
+  //   const filteredAirports = airports.filter((airport) =>
+  //     airport.airport_info.toLowerCase().includes(query.toLowerCase())
+  //   );
+  //   if (airportType === 'from') {
+  //     setFilteredFromAirports(filteredAirports);
+  //   } else if (airportType === 'to') {
+  //     setFilteredToAirports(filteredAirports);
+  //   }
+  // };
   
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   return (
@@ -189,7 +186,7 @@ export default function home({}) {
       <section className="bg-cover bg-center text-black py-16" style={{ backgroundImage: "url('/banner.jpg')" }}>
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold mb-8 text-center">Search for cheap flights</h2>
-            <Card className="bg-white/95 backdrop-blur-sm shadow-lg bg-yellowCustom">
+            {/* <Card className="bg-white/95 backdrop-blur-sm shadow-lg bg-yellowCustom">
               <CardContent className="p-6">
                 <Tabs defaultValue="return" className="w-full">
                   <TabsList className="grid w-full grid-cols-3 mb-6">
@@ -409,7 +406,8 @@ export default function home({}) {
                   </TabsContent>
                 </Tabs>
               </CardContent>
-            </Card>
+            </Card> */}
+            <FlightSearchBox/>
           </div>
         </section>
         {loading && <LoadingSpinner />}

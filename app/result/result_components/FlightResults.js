@@ -6,33 +6,6 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Plane } from 'lucide-react';
 
-const dummyFlights = [
-  {
-    id: 1,
-    airline: "British Airways",
-    departure: "10:00",
-    arrival: "12:30",
-    duration: "2h 30m",
-    price: 199.99,
-  },
-  {
-    id: 2,
-    airline: "EasyJet",
-    departure: "11:15",
-    arrival: "13:45",
-    duration: "2h 30m",
-    price: 149.99,
-  },
-  {
-    id: 3,
-    airline: "Ryanair",
-    departure: "14:00",
-    arrival: "16:30",
-    duration: "2h 30m",
-    price: 129.99,
-  },
-];
-
 function FlightResults({results, className }) {
   const searchResults = results;  
   const [loading, setLoading] = useState(false);
@@ -51,7 +24,7 @@ function FlightResults({results, className }) {
     <div className={className}>
       <h2 className="text-2xl font-bold mb-4">Flight Results</h2>
       <div className="space-y-4">
-        {dummyFlights.map((flight) => (
+        {/* {dummyFlights.map((flight) => (
           <Card key={flight.id}>
             <CardContent className="p-6">
               <div className="flex justify-between items-center">
@@ -73,7 +46,7 @@ function FlightResults({results, className }) {
               </div>
             </CardContent>
           </Card>
-        ))}
+        ))} */}
         {searchResults && (
   <div className="text-2xl mb-4">
     <div className="space-y-4">
@@ -131,7 +104,7 @@ function FlightResults({results, className }) {
 )}
 
         {/* {loading && <LoadingSpinner />} */}
-        {searchResults && (
+        {/* {searchResults && (
           <div className='container mx-auto px-4 my-4'>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {searchResults.map((result) => (
@@ -169,7 +142,7 @@ function FlightResults({results, className }) {
           ))} 
           </div>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

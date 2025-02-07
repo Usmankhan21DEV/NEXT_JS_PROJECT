@@ -8,6 +8,7 @@ import Sidebar from "./result_components/Sidebar";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import FlightSearchBox from "./result_components/FlightSearchbox";
 
 export default function FlightResultsPage() {
   const getparams = useSearchParams();
@@ -87,7 +88,7 @@ export default function FlightResultsPage() {
       {!loading &&
       <main className="container mx-auto px-4 py-8">
         {/* Search Form */}
-        <SearchForm />
+        <FlightSearchBox/>
 
         <div className="mt-8 flex flex-col md:flex-row gap-8">
           {/* Sidebar */}
