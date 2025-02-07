@@ -3,9 +3,6 @@
 import React,{useState} from 'react'
 import Link from 'next/link'
 import { Result } from 'postcss'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
 const Shorten = () => {
   const [url,seturl] = useState("")
     const [short,setshort] = useState("")
