@@ -25,9 +25,6 @@ const FlightSearchBox = ( ) => {
       from: new Date(), // Default to today
       to: addDays(new Date(), 1), // Default range (today + 1 day)
     });
-   
-    const [fromSearchQuery, setFromSearchQuery] = useState('');  // Search state for From airport
-    const [toSearchQuery, setToSearchQuery] = useState('');      // Search state for To airport
     const [filteredFromAirports, setFilteredFromAirports] = useState([]);
     const [filteredToAirports, setFilteredToAirports] = useState([]);
     const [query, setQuery] = useState('');
@@ -37,7 +34,6 @@ const FlightSearchBox = ( ) => {
     const [fromAirport, setFromAirport] = useState(''); 
     const [toAirport, setToAirport] = useState('');
     const [airports, setAirports] = useState([]);
-    const [searchResults, setSearchResults] = useState(null);
 
     const handleSearchClick = () => {
         const depdate = format(new Date(date.from), "yyyy-MM-dd");
@@ -49,15 +45,12 @@ const FlightSearchBox = ( ) => {
           toLocation,
           passcount,
           travelClass,
-        }).toString();
-    
-        // Navigate to the result page with query parameters
+        }).toString();    
         window.location.href = `/result?${queryParams}`;
       };
       const handlerSearch = async (e) => {    
         e.preventDefault();
         setLoading(true);
-     
       };
       const handleFromChange = (value) => {
         setFromAirport(value);

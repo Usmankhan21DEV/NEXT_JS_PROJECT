@@ -46,7 +46,9 @@ export default function FlightResultsPage() {
         const travelClass = getparams.get("travelClass");
         const toLocation = getparams.get("toLocation");
         const fromLocation = getparams.get("fromLocation");
-  
+        if (!depdate || !passcount || !travelClass || !toLocation || !fromLocation) {
+          window.location.href = '/home';
+        }
         const obj = { depdate, passcount, travelClass, fromLocation, toLocation };
         setTotalObj(obj);  
         setLoading(true);
